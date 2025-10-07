@@ -3,110 +3,215 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tampilan Cuaca Lengkap</title>
+    <title>Sistem Data Cuaca [Neo]</title>
     <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-    }
-    .container {
-        border: 2px solid #333;
-        padding: 20px;
-        max-width: 400px;
-    }
-    .data-row {
-        margin-bottom: 8px;
-    }
-    .label {
-        font-weight: bold;
-        display: inline-block;
-        width: 150px;
-    }
-</style>
-    </head>
+        /* Gaya High-Tech Dark Mode/Cyberpunk */
+        body {
+            font-family: 'Share Tech Mono', monospace; /* Font monospace untuk kesan futuristik */
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            
+            /* Latar Belakang Gelap dan Pemandangan */
+            background-image: url('https://source.unsplash.com/1600x900/?night,city,tech'); 
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            color: #00FF00; /* Teks hijau neon */
+        }
+
+        /* Overlay gelap kuat untuk efek High-Contrast */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85); /* Overlay sangat gelap */
+            backdrop-filter: blur(8px); 
+            z-index: -1;
+            /* Efek Grid Ringan (Opsional tapi keren) */
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        }
+
+        .container {
+            padding: 40px;
+            max-width: 450px;
+            width: 100%;
+            /* Desain Panel Data High-Tech */
+            background: rgba(0, 0, 0, 0.6); /* Transparansi sedikit gelap */
+            border-radius: 10px;
+            border: 2px solid #00FF00; /* Border Neon Hijau */
+            box-shadow: 0 0 25px rgba(0, 255, 0, 0.5), /* Glow neon */
+                        inset 0 0 10px rgba(0, 255, 0, 0.3); /* Glow di dalam */
+            transition: all 0.5s ease-in-out;
+            animation: pulse 4s infinite alternate; /* Animasi Glow Halus */
+        }
+        
+        @keyframes pulse {
+            from { box-shadow: 0 0 20px rgba(0, 255, 0, 0.4), inset 0 0 8px rgba(0, 255, 0, 0.2); }
+            to { box-shadow: 0 0 30px rgba(0, 255, 0, 0.6), inset 0 0 12px rgba(0, 255, 0, 0.4); }
+        }
+
+        h3 {
+            border-bottom: 1px dashed #00FF00;
+            padding-bottom: 8px;
+            margin-top: 25px;
+            color: #00FFFF; /* Warna sekunder Cyan Neon */
+            font-weight: 700;
+            text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
+        }
+        hr {
+            border: none;
+            border-top: 1px solid rgba(0, 255, 0, 0.2);
+            margin: 20px 0;
+        }
+        .data-row {
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px dotted rgba(0, 255, 0, 0.1);
+        }
+        .label {
+            font-weight: 400;
+            color: #99FF99; /* Hijau muda */
+            text-transform: uppercase;
+        }
+        .value {
+            font-weight: 700;
+            color: #00FF00; /* Hijau Neon utama */
+            text-shadow: 0 0 8px rgba(0, 255, 0, 0.8);
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+        .value:empty {
+            color: #FF0000;
+        }
+
+        /* Style untuk Kontrol Input */
+        #lokasiInput {
+            padding: 10px;
+            border: 1px solid #00FFFF;
+            border-radius: 3px;
+            margin-right: 8px;
+            width: calc(60% - 10px);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #00FFFF;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+        }
+        #getDataBtn {
+            padding: 10px 18px;
+            background-color: #00FF00; /* Tombol Hijau Neon */
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
+            transition: all 0.2s ease-out;
+        }
+        #getDataBtn:hover {
+            background-color: #00FFFF; /* Hover Cyan */
+            color: black;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 1);
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+</head>
 <body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" 
-integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" 
-crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<div class="container">
-    <div>
-        <span class="label">Lokasi:</span>
-        <input type="text" id="lokasiInput" value="Yogyakarta" placeholder="Masukkan Lokasi">
-        <button id="getDataBtn">GET DATA</button>
-    </div>
-    
-    <hr>
-    
-    <h3>Cuaca</h3>
-    <div class="data-row">
-        <span class="label">Suhu Celcius:</span> <span id="suhuCelcius">...</span> 	&deg;C
-    </div>
-    <div class="data-row">
-        <span class="label">Suhu Fahrenheit:</span> <span id="suhuFahrenheit">...</span> &deg;F
-    </div>
-    <div class="data-row">
-        <span class="label">Kelembapan:</span> <span id="kelembapan">...</span> %
-    </div>
-    
-    <hr>
-    
-    <h3>Lokasi</h3>
-    <div class="data-row">
-        <span class="label">Negara:</span> <span id="negara">...</span>
-    </div>
-    <div class="data-row">
-        <span class="label">Provinsi:</span> <span id="provinsi">...</span>
-    </div>
-    <div class="data-row">
-        <span class="label">Kecamatan:</span> <span id="kota">...</span>
-    </div>
-    <div class="data-row">
-        <span class="label">Longitude:</span> <span id="longitude">...</span>
-    </div>
-    <div class="data-row">
-        <span class="label">Latitude:</span> <span id="latitude">...</span>
-    </div>
-    
-</div>
-<script>
-    function fetchWeatherData() {
-    const apiKey = "f457561a97c04ecc84665646250710";
-    const locationQuery = $("#lokasiInput").val(); 
-    const urlapi = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${locationQuery}&aqi=no`;
+    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" 
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    $("#suhuCelcius").text("Memuat...");
-    $("#negara").text("Memuat...");
+    <div class="container">
+        <div>
+            <span class="label">Lokasi Target:</span>
+            <input type="text" id="lokasiInput" value="Yogyakarta" placeholder="ENTER LOCATION ID">
+            <button id="getDataBtn">GET DATA</button>
+        </div>
+        
+        <hr>
+        
+        <h3>STATUS CUACA</h3>
+        <div class="data-row">
+            <span class="label">Suhu Celcius:</span> <span class="value" id="suhuCelcius">...</span> 	&deg;C
+        </div>
+        <div class="data-row">
+            <span class="label">Suhu Fahrenheit:</span> <span class="value" id="suhuFahrenheit">...</span> &deg;F
+        </div>
+        <div class="data-row">
+            <span class="label">Kelembapan Udara:</span> <span class="value" id="kelembapan">...</span> %
+        </div>
+        
+        <hr>
+        
+        <h3>DATA KOORDINAT</h3>
+        <div class="data-row">
+            <span class="label">Negara ID:</span> <span class="value" id="negara">...</span>
+        </div>
+        <div class="data-row">
+            <span class="label">Provinsi:</span> <span class="value" id="provinsi">...</span>
+        </div>
+        <div class="data-row">
+            <span class="label">Kecamatan (Sistem):</span> <span class="value" id="kota">...</span>
+        </div>
+        <div class="data-row">
+            <span class="label">LONGITUDE:</span> <span class="value" id="longitude">...</span>
+        </div>
+        <div class="data-row">
+            <span class="label">LATITUDE:</span> <span class="value" id="latitude">...</span>
+        </div>
+        
+    </div>
 
-    $.ajax({
-        url: urlapi,
-        method: "GET",
-        success: function(data) {
-            console.log(data);
-            $("#suhuCelcius").text(data.current.temp_c);
-            $("#suhuFahrenheit").text(data.current.temp_f);
-            $("#kelembapan").text(data.current.humidity);
+    <script>
+        function fetchWeatherData() {
+            const apiKey = "f457561a97c04ecc84665646250710";
+            const locationQuery = $("#lokasiInput").val(); 
+            const urlapi = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${locationQuery}&aqi=no`;
 
-            $("#negara").text(data.location.country);
-            $("#provinsi").text(data.location.region);
-            $("#kota").text(data.location.name);
-            $("#longitude").text(data.location.lon);
-            $("#latitude").text(data.location.lat);
+            $("#suhuCelcius").text("LOADING...");
+            $("#negara").text("LOADING...");
 
-        },
-        error: function(xhr, status, error) {
-            console.error("Gagal mengambil data cuaca:", error);
-            $("#suhuCelcius").text("ERROR");
-            $("#negara").text("Data tidak ditemukan atau API bermasalah.");
-            $("#provinsi").text("-");
-            $("#kota").text("-");
-            $("#longitude").text("-");
-            $("#latitude").text("-");
-            $("#suhuFahrenheit").text("-");
-            $("#kelembapan").text("-");
+            $.ajax({
+                url: urlapi,
+                method: "GET",
+                success: function(data) {
+                    console.log(data);
+                    
+                    $("#suhuCelcius").text(data.current.temp_c);
+                    $("#suhuFahrenheit").text(data.current.temp_f);
+                    $("#kelembapan").text(data.current.humidity);
+
+                    $("#negara").text(data.location.country);
+                    $("#provinsi").text(data.location.region);
+                    $("#kota").text(data.location.name);
+                    $("#longitude").text(data.location.lon);
+                    $("#latitude").text(data.location.lat);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Gagal mengambil data cuaca:", error);
+                    $("#suhuCelcius").text("ERROR");
+                    $("#negara").text("DATA NOT FOUND");
+                    $("#provinsi").text("N/A");
+                    $("#kota").text("N/A");
+                    $("#longitude").text("N/A");
+                    $("#latitude").text("N/A");
+                    $("#suhuFahrenheit").text("N/A");
+                    $("#kelembapan").text("N/A");
+                }
+            });
         }
-    });
-}
-$(document).ready(function() {
+
+        $(document).ready(function() {
             fetchWeatherData();
         });
 
@@ -119,6 +224,6 @@ $(document).ready(function() {
                 fetchWeatherData();
             }
         });
-</script>
-    </body>
+    </script>
+</body>
 </html>
