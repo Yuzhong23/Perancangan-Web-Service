@@ -68,5 +68,26 @@ crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     </div>
     
 </div>
+<script>
+    function fetchWeatherData() {
+    const apiKey = "f457561a97c04ecc84665646250710";
+    const locationQuery = $("#lokasiInput").val(); 
+    const urlapi = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${locationQuery}&aqi=no`;
+
+    $("#suhuCelcius").text("Memuat...");
+    $("#negara").text("Memuat...");
+
+    $.ajax({
+        url: urlapi,
+        method: "GET",
+        success: function(data) {
+            console.log(data);
+        },
+        error: function(xhr, status, error) {
+            console.error("Gagal mengambil data cuaca:", error);
+        }
+    });
+}
+</script>
     </body>
 </html>
