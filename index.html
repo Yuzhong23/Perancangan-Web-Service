@@ -82,6 +82,16 @@ crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         method: "GET",
         success: function(data) {
             console.log(data);
+            $("#suhuCelcius").text(data.current.temp_c);
+            $("#suhuFahrenheit").text(data.current.temp_f);
+            $("#kelembapan").text(data.current.humidity);
+
+            $("#negara").text(data.location.country);
+            $("#provinsi").text(data.location.region);
+            $("#kota").text(data.location.name);
+            $("#longitude").text(data.location.lon);
+            $("#latitude").text(data.location.lat);
+
         },
         error: function(xhr, status, error) {
             console.error("Gagal mengambil data cuaca:", error);
