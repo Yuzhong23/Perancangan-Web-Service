@@ -106,6 +106,19 @@ crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         }
     });
 }
+$(document).ready(function() {
+            fetchWeatherData();
+        });
+
+        $("#getDataBtn").click(function() {
+            fetchWeatherData();
+        });
+
+        $("#lokasiInput").keypress(function(e) {
+            if (e.which == 13) {
+                fetchWeatherData();
+            }
+        });
 </script>
     </body>
 </html>
