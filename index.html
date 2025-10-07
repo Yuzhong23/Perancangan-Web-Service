@@ -95,6 +95,14 @@ crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         },
         error: function(xhr, status, error) {
             console.error("Gagal mengambil data cuaca:", error);
+            $("#suhuCelcius").text("ERROR");
+            $("#negara").text("Data tidak ditemukan atau API bermasalah.");
+            $("#provinsi").text("-");
+            $("#kota").text("-");
+            $("#longitude").text("-");
+            $("#latitude").text("-");
+            $("#suhuFahrenheit").text("-");
+            $("#kelembapan").text("-");
         }
     });
 }
